@@ -1,0 +1,40 @@
+{
+  "id": "scenario_05_complex_full_pipeline",
+  "complexity": "complex",
+  "description": "Complete sales pipeline in one conversation: lead -> qualify -> deal -> progress -> contract",
+  "preconditions": {
+    "seed_leads": []
+  },
+  "turns": [
+    {
+      "turn_id": 1,
+      "user_message": "Create lead for Tech Corp, email contact@techcorp.com, phone 0721999888, company Tech Corp, source REFERRAL",
+      "expected_tools": ["create_lead"],
+      "expected_outcomes": {"lead_count_min": 1}
+    },
+    {
+      "turn_id": 2,
+      "user_message": "Update its status to QUALIFIED",
+      "expected_tools": ["update_lead_status"],
+      "expected_outcomes": {"lead_status_for_company_techcorp": "QUALIFIED"}
+    },
+    {
+      "turn_id": 3,
+      "user_message": "Create a deal for this lead: title 'Tech Corp Enterprise License', value 50000",
+      "expected_tools": ["create_deal"],
+      "expected_outcomes": {"deal_count_min": 1}
+    },
+    {
+      "turn_id": 4,
+      "user_message": "Move the deal to QUALIFIED stage",
+      "expected_tools": ["move_deal_stage"],
+      "expected_outcomes": {"deal_with_title_in_stage": {"title": "Tech Corp Enterprise License", "stage": "QUALIFIED"}}
+    },
+    {
+      "turn_id": 5,
+      "user_message": "Generate a contract for this deal",
+      "expected_tools": ["generate_contract"],
+      "expected_outcomes": {"contract_count_min": 1}
+    }
+  ]
+}

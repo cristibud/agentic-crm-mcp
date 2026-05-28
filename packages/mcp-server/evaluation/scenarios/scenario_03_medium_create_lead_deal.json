@@ -1,0 +1,29 @@
+{
+  "id": "scenario_03_medium_create_lead_deal",
+  "complexity": "medium",
+  "description": "Create a lead, then create a deal for it in two consecutive messages",
+  "preconditions": {
+    "seed_leads": []
+  },
+  "turns": [
+    {
+      "turn_id": 1,
+      "user_message": "Create lead for John Doe, email john.doe@acmecorp.com, phone 0700123456, company AcmeCorp, source WEBSITE",
+      "expected_tools": ["create_lead"],
+      "expected_outcomes": {
+        "lead_count_min": 1,
+        "lead_with_name": "John Doe"
+      }
+    },
+    {
+      "turn_id": 2,
+      "user_message": "Create a deal for this lead, title 'AcmeCorp Software License', value 15000",
+      "expected_tools": ["create_deal"],
+      "expected_outcomes": {
+        "deal_count_min": 1,
+        "deal_with_title": "AcmeCorp Software License",
+        "deal_linked_to_lead_with_name": "John Doe"
+      }
+    }
+  ]
+}

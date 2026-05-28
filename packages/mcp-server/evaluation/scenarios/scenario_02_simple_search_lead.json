@@ -1,0 +1,22 @@
+{
+  "id": "scenario_02_simple_search_lead",
+  "complexity": "simple",
+  "description": "Search for leads by name with partial matching",
+  "preconditions": {
+    "seed_leads": [
+      {"name": "John Smith", "email": "john.smith@testco.com", "phone": "0700111222", "company": "TestCo", "source": "WEBSITE"},
+      {"name": "Maria Popescu", "email": "maria@othercorp.com", "phone": "0700333444", "company": "OtherCorp", "source": "REFERRAL"}
+    ]
+  },
+  "turns": [
+    {
+      "turn_id": 1,
+      "user_message": "Find leads with name John",
+      "expected_tools": ["search_leads"],
+      "expected_outcomes": {
+        "search_returned_results": true,
+        "min_search_results": 1
+      }
+    }
+  ]
+}

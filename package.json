@@ -1,0 +1,21 @@
+{
+  "name": "crm-mcp-http",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"pnpm --filter api dev\" \"pnpm --filter mcp-server dev\" \"pnpm --filter web dev\"",
+    "build": "pnpm --filter api build && pnpm --filter mcp-server build && pnpm --filter web build",
+    "test": "pnpm --filter api test",
+    "lint": "pnpm -r lint",
+    "db:migrate": "pnpm --filter api db:migrate",
+    "db:seed": "pnpm --filter api db:seed"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "openai": "^6.32.0"
+  }
+}

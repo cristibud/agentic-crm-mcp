@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  UNQUALIFIED
+  CONVERTED
+}
+
+enum LeadSource {
+  WEBSITE
+  REFERRAL
+  LINKEDIN
+  COLD_CALL
+  OTHER
+}
+
+enum DealStage {
+  PROSPECT
+  QUALIFIED
+  PROPOSAL
+  NEGOTIATION
+  WON
+  LOST
+}
+
+enum ContractStatus {
+  DRAFT
+  SENT
+  SIGNED
+  EXPIRED
+  CANCELLED
+}
+
+enum ActivityType {
+  LEAD_CREATED
+  LEAD_UPDATED
+  DEAL_CREATED
+  DEAL_STAGE_CHANGED
+  CONTRACT_CREATED
+  CONTRACT_SIGNED
+  NOTE_ADDED
+}
+
+model User {
+  id         String     @id @default(cuid())
+  email      String     @unique
+  name       String
+  role       String     @default("agent")
+  apiKey     String     @unique
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  leads      Lead[]
+  deals      Deal[]
+  activities Activity[]
+}
+
+model Lead {
+  id         String      @id @default(cuid())
+  name       String
+  email      String      @unique
+  phone      String?
+  company    String?
+  source     LeadSource
+  status     LeadStatus  @default(NEW)
+  score      Int         @default(0)
+  notes      String?
+  ownerId    String?
+  owner      User?       @relation(fields: [ownerId], references: [id])
+  deals      Deal[]
+  activities Activity[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}
+
+model Deal {
+  id          String      @id @default(cuid())
+  title       String
+  value       Float
+  probability Int         @default(50)
+  stage       DealStage   @default(PROSPECT)
+  closedAt    DateTime?
+  leadId      String
+  lead        Lead        @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  ownerId     String?
+  owner       User?       @relation(fields: [ownerId], references: [id])
+  contracts   Contract[]
+  activities  Activity[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+model Contract {
+  id        String         @id @default(cuid())
+  number    String         @unique
+  status    ContractStatus @default(DRAFT)
+  content   String         @db.Text
+  pdfUrl    String?
+  signedAt  DateTime?
+  dealId    String
+  deal      Deal           @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model Activity {
+  id          String       @id @default(cuid())
+  type        ActivityType
+  description String
+  metadata    Json?
+  userId      String?
+  leadId      String?
+  dealId      String?
+  contractId  String?
+  user        User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lead        Lead?        @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  deal        Deal?        @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  createdAt   DateTime    @default(now())
+}
+
+model Settings {
+  id         String   @id @default("config")
+  llmModel   String   @default("gpt-4-turbo")
+  llmBaseUrl String   @default("https://api.openai.com/v1")
+  llmApiKey  String
+  updatedAt  DateTime @updatedAt
+}

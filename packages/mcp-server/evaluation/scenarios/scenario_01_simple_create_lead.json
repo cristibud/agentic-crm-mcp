@@ -1,0 +1,20 @@
+{
+  "id": "scenario_01_simple_create_lead",
+  "complexity": "simple",
+  "description": "Create a single lead with all required fields provided in one message",
+  "preconditions": {
+    "seed_leads": []
+  },
+  "turns": [
+    {
+      "turn_id": 1,
+      "user_message": "Create a new lead for Maria Popescu, email maria.popescu@acmero.com, phone 0721234567, company Acme Romania, source LINKEDIN",
+      "expected_tools": ["create_lead"],
+      "expected_outcomes": {
+        "lead_count_min": 1,
+        "lead_with_name": "Maria Popescu",
+        "lead_with_email": "maria.popescu@acmero.com"
+      }
+    }
+  ]
+}

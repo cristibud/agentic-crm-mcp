@@ -1,0 +1,29 @@
+{
+  "id": "scenario_04_medium_pending_plan",
+  "complexity": "medium",
+  "description": "User asks to create deal without all required info; system should ask for missing params; user completes",
+  "preconditions": {
+    "seed_leads": [
+      {"name": "Maria Ionescu", "email": "maria.ionescu@startco.com", "phone": "0700555666", "company": "StartCo", "source": "REFERRAL"}
+    ]
+  },
+  "turns": [
+    {
+      "turn_id": 1,
+      "user_message": "Create a deal for Maria Ionescu's lead",
+      "expected_outcomes": {
+        "pending_plan_or_clarification_requested": true
+      }
+    },
+    {
+      "turn_id": 2,
+      "user_message": "Title 'Consultancy Q2', value 8500",
+      "expected_tools": ["create_deal"],
+      "expected_outcomes": {
+        "deal_count_min": 1,
+        "deal_with_title": "Consultancy Q2",
+        "deal_linked_to_lead_with_name": "Maria Ionescu"
+      }
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "id": "scenario_06_complex_context_switch",
+  "complexity": "complex",
+  "description": "Multiple entities in conversation; agent must resolve implicit references correctly across context switches",
+  "preconditions": {
+    "seed_leads": [
+      {"name": "Alpha Co", "email": "info@alphaco.com", "phone": "0721111000", "company": "Alpha Co", "source": "WEBSITE"},
+      {"name": "Beta Inc", "email": "info@betainc.com", "phone": "0721222000", "company": "Beta Inc", "source": "LINKEDIN"}
+    ]
+  },
+  "turns": [
+    {
+      "turn_id": 1,
+      "user_message": "Find Alpha Co lead",
+      "expected_tools": ["search_leads"]
+    },
+    {
+      "turn_id": 2,
+      "user_message": "Create a deal for it: title 'Alpha Migration', value 12000",
+      "expected_tools": ["create_deal"],
+      "expected_outcomes": {
+        "deal_with_title": "Alpha Migration",
+        "deal_linked_to_lead_with_name": "Alpha Co"
+      }
+    },
+    {
+      "turn_id": 3,
+      "user_message": "Now find Beta Inc lead",
+      "expected_tools": ["search_leads"]
+    },
+    {
+      "turn_id": 4,
+      "user_message": "Create a deal for this one: title 'Beta Consultancy', value 7500",
+      "expected_tools": ["create_deal"],
+      "expected_outcomes": {
+        "deal_with_title": "Beta Consultancy",
+        "deal_linked_to_lead_with_name": "Beta Inc"
+      }
+    }
+  ]
+}
