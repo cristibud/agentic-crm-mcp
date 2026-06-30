@@ -2,26 +2,12 @@
 # Coolify reads this file, builds each service and exposes the ones carrying a
 # SERVICE_FQDN_* magic variable through its Traefik proxy (3 separate domains).
 #
-# Configure the variables from .env.production.example in the Coolify UI
-# (Environment Variables). The three NEXT_PUBLIC_* values must be the PUBLIC
-# domains of api/mcp because they are baked into the browser bundle at build time.
+# The database is an EXTERNAL (managed) Postgres — set DATABASE_URL in the Coolify
+# Environment Variables. Configure the rest from .env.production.example. The three
+# NEXT_PUBLIC_* values must be the PUBLIC domains of api/mcp because they are baked
+# into the browser bundle at build time.
 
 services:
-  postgres:
-    image: postgres:16-alpine
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB:-crm_db}
-      POSTGRES_USER: ${POSTGRES_USER:-crm_user}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-crm_password}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-crm_user} -d ${POSTGRES_DB:-crm_db}"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   api:
     build:
       context: .
@@ -32,7 +18,8 @@ services:
       - SERVICE_FQDN_API_3001
       - NODE_ENV=production
       - PORT=3001
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-crm_user}:${POSTGRES_PASSWORD:-crm_password}@postgres:5432/${POSTGRES_DB:-crm_db}
+      # External managed Postgres — full connection string set in Coolify env.
+      - DATABASE_URL=${DATABASE_URL}
       - API_KEY=${API_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - LLM_MODEL=${LLM_MODEL}
@@ -41,9 +28,6 @@ services:
       - MCP_SERVER_URL=http://mcp:3002
     expose:
       - "3001"
-    depends_on:
-      postgres:
-        condition: service_healthy
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://localhost:3001/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 15s
@@ -95,6 +79,3 @@ services:
     depends_on:
       - api
       - mcp
-
-volumes:
-  postgres_data:
