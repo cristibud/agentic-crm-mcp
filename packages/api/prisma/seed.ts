@@ -6,12 +6,12 @@ async function main() {
   // Create admin user
   const admin = await prisma.user.upsert({
     where: { email: 'admin@crm.ro' },
-    update: {},
+    update: { apiKey: process.env.API_KEY || 'crm-secret-key-2024' },
     create: {
       email: 'admin@crm.ro',
       name: 'Admin CRM',
       role: 'admin',
-      apiKey: 'crm-secret-key-2024',
+      apiKey: process.env.API_KEY || 'crm-secret-key-2024',
     },
   });
 
