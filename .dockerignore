@@ -1,0 +1,26 @@
+# Dependencies & build artifacts — always reinstalled/rebuilt inside the image
+**/node_modules
+**/dist
+**/.next
+**/.turbo
+
+# Local env & secrets — provided at runtime by Coolify, never baked into the image
+.env
+**/.env
+**/.env.local
+**/.env.*.local
+
+# VCS & tooling
+.git
+.gitignore
+**/.DS_Store
+**/*.log
+packages/mcp-server/logs
+
+# TS incremental cache
+**/tsconfig.tsbuildinfo
+**/*.tsbuildinfo
+
+# Docs / misc not needed in build context
+DEPLOY.md
+docker-compose.dev.yml
