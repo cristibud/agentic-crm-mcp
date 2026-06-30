@@ -28,6 +28,11 @@ services:
       - MCP_SERVER_URL=http://mcp:3002
     expose:
       - "3001"
+    networks:
+      # default → talk to mcp/web; coolify → reach the managed Postgres by its
+      # internal hostname.
+      - default
+      - coolify
     healthcheck:
       test: ["CMD", "node", "-e", "fetch('http://localhost:3001/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
       interval: 15s
@@ -79,3 +84,9 @@ services:
     depends_on:
       - api
       - mcp
+
+networks:
+  # Coolify's predefined network, where managed databases live. Declared as
+  # external so the api can reach the managed Postgres by its internal hostname.
+  coolify:
+    external: true
